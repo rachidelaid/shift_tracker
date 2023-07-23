@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import html2canvas from "html2canvas";
 import { db } from "../utils/firebase";
 import Link from "next/link";
+import { getUser } from "../utils/db_functions";
 
 const Badge = ({ userID }: { userID: string }) => {
   const canvas = useRef(null);
@@ -13,24 +14,13 @@ const Badge = ({ userID }: { userID: string }) => {
   const [user, setUser] = useState<any>({});
   const [badgeLink, setBadgeLink] = useState<string>("");
 
-  const getUser = async () => {
-    const docRef = doc(db, "users", userID);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-      setUser(docSnap.data());
-    } else {
-      console.log("No such document!");
-    }
-  };
-
   useEffect(() => {
     QRCode.toCanvas(canvas.current, userID, (error: any) => {
       if (error) console.error(error);
       console.log("success!");
     });
 
-    getUser();
+    getUser(userID, setUser);
   }, []);
 
   useEffect(() => {
