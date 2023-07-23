@@ -36,6 +36,7 @@ const Page = () => {
 
     if (password !== rePassword) {
       setError("Passwords do not match");
+      setLoading(false);
       return;
     }
 
