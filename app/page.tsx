@@ -1,113 +1,103 @@
-import Image from 'next/image'
+"use client";
 
-export default function Home() {
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { app } from "./utils/firebase";
+import Loading from "./components/Loading";
+
+const auth = getAuth(app);
+
+const Home = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+      }
+      setLoading(false);
+    });
+  }, []);
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="h-screen flex justify-center flex-col gap-4 items-center">
+      {loading && <Loading />}
+
+      {isLoggedIn && (
+        <div
+          onClick={() => signOut(auth)}
+          className="absolute flex items-center group flex-row-reverse gap-2 top-4 right-4 transition-all duration-200 hover:text-white text-red-500 cursor-pointer hover:bg-red-500 p-2 rounded-md"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="currentColor"
+            className="w-6 h-6"
           >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"
             />
-          </a>
+          </svg>
+
+          <span className="group-hover:w-fit w-0 opacity-0 group-hover:opacity-100">
+            Logout
+          </span>
         </div>
-      </div>
+      )}
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+      <svg
+        width="200px"
+        height="200px"
+        viewBox="0 -43.5 1111 1111"
+        className="icon"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M378.88 248.685714l129.462857 162.377143 9.508572 11.702857v15.36l1.462857 155.062857v16.091429l-10.24 12.434286-147.748572 182.125714c-2.925714 3.657143-7.314286 16.091429-6.582857 21.211429v2.925714l2.925714 43.885714-87.771428 5.851429-2.925714-43.885715v-2.925714c-1.462857-27.062857 8.777143-61.44 26.331428-82.651428l147.748572-182.125715-9.508572 27.794286-1.462857-155.062857 9.508571 27.062857-148.48-185.782857-24.868571-30.72h112.64v-0.731429zM765.805714 775.314286l-129.462857-162.377143-9.508571-11.702857v-15.36l-1.462857-155.062857v-16.091429l10.24-12.434286 147.748571-182.125714c2.925714-3.657143 7.314286-16.091429 6.582857-21.211429v-2.925714l-2.925714-43.885714 87.771428-5.851429 2.925715 43.885715v2.925714c1.462857 27.062857-8.777143 61.44-26.331429 82.651428l-147.748571 182.125715 9.508571-27.794286 1.462857 155.062857-9.508571-27.062857 148.48 185.782857 24.868571 30.72h-112.64v0.731429z"
+          fill="#0C92F2"
         />
+        <path
+          d="M577.828571 680.228571l80.457143 102.4h-160.914285z"
+          fill="#FC830A"
+        />
+        <path
+          d="M577.828571 343.771429l80.457143-102.4h-160.914285z"
+          fill="#61B6F2"
+        />
+        <path
+          d="M249.417143 65.828571h738.742857s-5.12 87.771429-109.714286 87.771429h-716.8s7.314286-87.771429 87.771429-87.771429zM249.417143 863.085714h738.742857s-5.12 87.771429-109.714286 87.771429h-716.8s7.314286-87.771429 87.771429-87.771429z"
+          fill="#0C92F2"
+        />
+      </svg>
+      <h1 className="text-4xl font-bold uppercase">Shift Tracker</h1>
+      <p className="text-xl">an app to track employees shifts</p>
+      <div className="mt-8 flex flex-col gap-2">
+        {isLoggedIn ? (
+          <Link href="/scan" className="button !bg-secondary">
+            scan
+          </Link>
+        ) : (
+          <>
+            <Link href="/login" className="button !bg-primary">
+              login
+            </Link>
+            <Link href="/register" className="button !bg-tertiary">
+              create an account
+            </Link>
+          </>
+        )}
       </div>
+    </div>
+  );
+};
 
-      <div className="mb-32 grid text-center lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore the Next.js 13 playground.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
-}
+export default Home;
